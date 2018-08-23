@@ -14,10 +14,12 @@ Control IKEA Tradfri devices through Gladys
 - Authentication on Tradfri gateway
 - Store credentials so you don't have to authenticate further
 - Subscribe to devices update
+- Add discovered devices/deviceTypes to Gladys DB
+- Listen to device update and sync
 
 ##TODO
-- Add discovered devices to Gladys DB
 - Control devices
+
 
 ##
 Not officially part of the Gladys Project created by Pierre Gilles Leymarie
