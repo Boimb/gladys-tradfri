@@ -1,5 +1,6 @@
 const init = require('./lib/init');
 const setup = require('./lib/setup');
+const exec = require('./lib/exec');
 
 module.exports = function(sails) {
   gladys.on('ready', function(){
@@ -8,6 +9,7 @@ module.exports = function(sails) {
 
   return {
     setup,
-    init
+    init,
+    exec
   }
 };
