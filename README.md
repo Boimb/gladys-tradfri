@@ -16,10 +16,13 @@ Control IKEA Tradfri devices through Gladys
 - Subscribe to devices update
 - Add discovered devices/deviceTypes to Gladys DB
 - Listen to device update and sync
-
-##TODO
 - Control devices
 
+##TODO
+- Manage Groups
+- Change device properties (on gateway)
+- Change deviceTypes properties (on gateway)
+- Manage gateway status (updates,disconnect...)
 
 ##
 Not officially part of the Gladys Project created by Pierre Gilles Leymarie
