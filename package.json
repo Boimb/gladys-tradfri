@@ -1,6 +1,6 @@
 {
   "name": "gladys-tradfri",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Control IKEA Tradfri devices through Gladys",
   "main": "index.js",
   "scripts": {
