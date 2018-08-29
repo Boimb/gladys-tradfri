@@ -4,11 +4,15 @@
   "description": "Control IKEA Tradfri devices through Gladys",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "author": "Boimb",
   "license": "MIT",
   "dependencies": {
     "node-tradfri-client": "1.2.1"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "sinon": "^6.1.5"
   }
 }
