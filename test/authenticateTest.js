@@ -1,10 +1,9 @@
 const assert = require('assert');
-const sinon = require ('sinon')
+const {TRADFRI_SECRET} = require ('../lib/const')
 const gladysMock = require('gladys-node-api-mock')
 const sailsGlobal = require('./mocks/sails')
-const TradfriClientMock = require('./mocks/tradfriClient')
+const {TradfriClientMock} = require('./mocks/tradfriClient')
 const authenticate = require('../lib/authenticate')
-const {TRADFRI_SECRET} = require('../lib/const')
 
 beforeEach(function() {
   sails = sailsGlobal
@@ -14,15 +13,14 @@ beforeEach(function() {
 describe('Authenticate test', () => {
   before(() => {
     // Set a valid client
-    client = new TradfriClientMock(TradfriClientMock.OK_ADRESS)
+    client = new TradfriClientMock(TradfriClientMock.OK_IPV4_ADRESS)
   })
   after(()=> {
     client = null
   })
   describe('WRONG SECRET', () => {
     it('Should reject if no TRADFRI_SECRET', () => {
-      const fake = sinon.fake.returns(Promise.reject(new Error()));
-      sinon.replace(gladys.param, 'getValue', fake);
+      gladys.param.setValue({name: TRADFRI_SECRET, value: null})
       return authenticate(client)
         .then(res => {
           assert(true === false, 'Promise should have been rejected')
@@ -32,9 +30,7 @@ describe('Authenticate test', () => {
         })
     });
     it('Should reject if default TRADFRI_SECRET', () => {
-      sinon.restore()
-      const fake = sinon.fake.returns(Promise.reject(new Error()))
-      sinon.replace(gladys.param, 'getValue', fake);
+      gladys.param.setValue({name: TRADFRI_SECRET, value: TRADFRI_SECRET})
       return authenticate(client)
         .then(res => {
           assert(true === false, 'Promise should have been rejected')
@@ -44,9 +40,7 @@ describe('Authenticate test', () => {
       })
     })
     it('Should reject if invalid secret', () => {
-      sinon.restore()
-      const fake = sinon.fake.returns(Promise.resolve('invalidSecret'))
-      sinon.replace(gladys.param, 'getValue', fake);
+      gladys.param.setValue({name: TRADFRI_SECRET, value: 'invalidSecret'})
       return authenticate(client)
       .then(() => {
         assert(true === false, 'Promise should have been rejected')
@@ -58,9 +52,7 @@ describe('Authenticate test', () => {
   })
   describe('VALID SECRET', () => {
     it('Should resolve in credentials', () => {
-      sinon.restore()
-      const fake = sinon.fake.returns(Promise.resolve('validSecret'))
-      sinon.replace(gladys.param, 'getValue', fake);
+      gladys.param.setValue({name: TRADFRI_SECRET, value: 'validSecret'})
       return authenticate(client)
         .then(credentials => {
           assert(Array.isArray(credentials), 'Credentials is an array')
@@ -74,9 +66,16 @@ describe('Authenticate test', () => {
 
 describe('Gateway connection', () => {
   describe('Wrong adress', () => {
-    it('should throw if no gateway reachable with IP', () => {
+    it('should throw if no gateway reachable with wrong IPV4', () => {
       try {
-        client = new TradfriClientMock(TradfriClientMock.KO_ADRESS)
+        client = new TradfriClientMock(TradfriClientMock.KO_IPV4_ADRESS)
+      } catch (err) {
+        assert(err.message === 'Gateway unreachable', 'OK')
+      }
+    })
+    it('should throw if no gateway reachable with wrong IPV6', () => {
+      try {
+        client = new TradfriClientMock(TradfriClientMock.KO_IPV6_ADRESS)
       } catch (err) {
         assert(err.message === 'Gateway unreachable', 'OK')
       }
@@ -92,7 +91,7 @@ describe('Gateway connection', () => {
   describe('Good adress', () => {
     it('should not throw if adress OK', () => {
       try {
-        client = new TradfriClientMock(TradfriClientMock.OK_ADRESS)
+        client = new TradfriClientMock(TradfriClientMock.OK_IPV4_ADRESS)
       } catch (err) {
         assert(true === false, 'Should not have thrown')
       } finally {
