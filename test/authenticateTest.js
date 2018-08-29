@@ -2,7 +2,7 @@ const assert = require('assert');
 const sinon = require ('sinon')
 const gladysMock = require('gladys-node-api-mock')
 const sailsGlobal = require('./mocks/sails')
-const client = require('./mocks/tradfriClient')
+const TradfriClientMock = require('./mocks/tradfriClient')
 const authenticate = require('../lib/authenticate')
 const {TRADFRI_SECRET} = require('../lib/const')
 
@@ -10,8 +10,15 @@ beforeEach(function() {
   sails = sailsGlobal
   gladys = gladysMock
 });
-describe('Authenticate test', () => {
 
+describe('Authenticate test', () => {
+  before(() => {
+    // Set a valid client
+    client = new TradfriClientMock(TradfriClientMock.OK_ADRESS)
+  })
+  after(()=> {
+    client = null
+  })
   describe('WRONG SECRET', () => {
     it('Should reject if no TRADFRI_SECRET', () => {
       const fake = sinon.fake.returns(Promise.reject(new Error()));
@@ -49,7 +56,6 @@ describe('Authenticate test', () => {
       })
     })
   })
-
   describe('VALID SECRET', () => {
     it('Should resolve in credentials', () => {
       sinon.restore()
@@ -65,3 +71,42 @@ describe('Authenticate test', () => {
     })
   })
 });
+
+describe('Gateway connection', () => {
+  describe('Wrong adress', () => {
+    it('should throw if no gateway reachable with IP', () => {
+      try {
+        client = new TradfriClientMock(TradfriClientMock.KO_ADRESS)
+      } catch (err) {
+        assert(err.message === 'Gateway unreachable', 'OK')
+      }
+    })
+    it('should throw if no gateway reachable with hostname', () => {
+      try {
+        client = new TradfriClientMock(TradfriClientMock.KO_HOSTNAME)
+      } catch (err) {
+        assert(err.message === 'Gateway unreachable', 'OK')
+      }
+    })
+  })
+  describe('Good adress', () => {
+    it('should not throw if adress OK', () => {
+      try {
+        client = new TradfriClientMock(TradfriClientMock.OK_ADRESS)
+      } catch (err) {
+        assert(true === false, 'Should not have thrown')
+      } finally {
+        assert(true === true, 'Connection OK')
+      }
+    })
+    it('should not throw if hostname OK', () => {
+      try {
+        client = new TradfriClientMock(TradfriClientMock.OK_HOSTNAME)
+      } catch (err) {
+        assert(true === false, 'Should not have thrown')
+      } finally {
+        assert(true === true, 'Connection OK')
+      }
+    })
+  })
+})
