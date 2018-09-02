@@ -11,6 +11,7 @@ env:
   - CXX=g++-4.8
   global:
       - CC_TEST_REPORTER_ID=d5f33caf9feba54e810c536773d40ffae1125bc8dabc964c3cab561303b00303
+
 addons:
   apt:
     sources:
@@ -24,7 +25,7 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - nyc mocha
+  - "nyc mocha"
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
