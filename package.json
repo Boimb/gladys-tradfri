@@ -4,7 +4,7 @@
   "description": "Control IKEA Tradfri devices through Gladys",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "nyc ./node_modules/mocha/bin/mocha"
   },
   "author": "Boimb",
   "license": "MIT",
@@ -14,6 +14,8 @@
   "devDependencies": {
     "mocha": "^5.2.0",
     "sinon": "^6.1.5",
-    "bluebird": ""
+    "bluebird": "^3.5.1",
+    "nyc": "^13.0.1",
+    "gladys-node-api-mock": "git+https://github.com/Boimb/gladys-node-api-mock.git"
   }
 }
