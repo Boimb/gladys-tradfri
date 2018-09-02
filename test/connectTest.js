@@ -44,6 +44,5 @@ describe('CONNECT TESTS', () => {
           assert(true === false, 'Should not have been rejected')
         })
     })
-
   })
 })

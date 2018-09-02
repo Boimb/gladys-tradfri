@@ -17,5 +17,15 @@
     "bluebird": "^3.5.1",
     "nyc": "^13.0.1",
     "gladys-node-api-mock": "git+https://github.com/Boimb/gladys-node-api-mock.git"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "per-file": true,
+    "reporter": [
+      "clover",
+      "text-summary"
+    ],
+    "all": true,
+    "report-dir": "./"
   }
 }
