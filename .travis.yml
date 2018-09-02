@@ -8,8 +8,8 @@ before_install:
   - npm install
 
 env:
-  - CXX=g++-4.8
   global:
+  - CXX=g++-4.8
   - CC_TEST_REPORTER_ID=d5f33caf9feba54e810c536773d40ffae1125bc8dabc964c3cab561303b00303
 
 addons:
