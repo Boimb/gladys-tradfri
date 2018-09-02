@@ -22,6 +22,9 @@
   "nyc": {
     "check-coverage": true,
     "per-file": true,
+    "lines": 75,
+    "statements": 75,
+    "functions": 75,
     "reporter": [
       "clover",
       "text-summary"
