@@ -11,38 +11,39 @@ beforeEach(function() {
   sails = sailsGlobal
   gladys = gladysMock
 });
+describe('CONNECT TESTS', () => {
 
-describe('Finding gateway', () => {
-  it('Should reject if no gateway found', () => {
-    return connect(null)
-      .then(() => {
-        assert(true === false, 'Should not have resolved')
-      })
-      .catch(err => {
-        assert(err.message === 'Could not find any TRADFRI gateway', 'Attended rejection')
-      })
+  describe('Finding gateway', () => {
+    it('Should reject if no gateway found', () => {
+      return connect(null)
+        .then(() => {
+          assert(true === false, 'Should not have resolved')
+        })
+        .catch(err => {
+          assert(err.message === 'Could not find any TRADFRI gateway', 'Attended rejection')
+        })
+    })
+
   })
 
-})
+  describe('Using validSecret', () => {
+    it('Should connect if validSecret', () => {
+      // Set a valid secret
+      gladys.param.setValue({name: TRADFRI_SECRET, value: 'validSecret'})
 
-describe('Using validSecret', () => {
-  it('Should connect if validSecret', () => {
-    // Set a valid secret
-    gladys.param.setValue({name: TRADFRI_SECRET, value: 'validSecret'})
+      // mock tradfriClient
+      const clientMock = new TradfriClientMock()
+      sinon.stub(TradfriClient.prototype, 'authenticate').callsFake(clientMock.authenticate)
+      sinon.stub(TradfriClient.prototype, 'connect').callsFake(clientMock.connect)
 
-    // mock tradfriClient
-    const clientMock = new TradfriClientMock()
-    sinon.stub(TradfriClient.prototype, 'authenticate').callsFake(clientMock.authenticate)
-    sinon.stub(TradfriClient.prototype, 'connect').callsFake(clientMock.connect)
+      return connect(discoveredGatewayMock)
+        .then(client => {
+          assert(client instanceof TradfriClient, 'Got client')
+        })
+        .catch(err => {
+          assert(true === false, 'Should not have been rejected')
+        })
+    })
 
-    return connect(discoveredGatewayMock)
-      .then(client => {
-        assert(client instanceof TradfriClient, 'Got client')
-      })
-      .catch(err => {
-        console.log('error', err)
-        assert(true === false, 'Should not have been rejected')
-      })
   })
-
 })

@@ -10,7 +10,7 @@ beforeEach(function() {
   gladys = gladysMock
 });
 
-describe('Authenticate test', () => {
+describe('AUTHENTICATE TESTS', () => {
   before(() => {
     // Set a valid client
     client = new TradfriClientMock(TradfriClientMock.OK_IPV4_ADRESS)
@@ -18,7 +18,7 @@ describe('Authenticate test', () => {
   after(()=> {
     client = null
   })
-  describe('WRONG SECRET', () => {
+  describe('Invalid Secret', () => {
     it('Should reject if no TRADFRI_SECRET', () => {
       gladys.param.setValue({name: TRADFRI_SECRET, value: null})
       return authenticate(client)
@@ -50,7 +50,7 @@ describe('Authenticate test', () => {
       })
     })
   })
-  describe('VALID SECRET', () => {
+  describe('Valid secret', () => {
     it('Should resolve in credentials', () => {
       gladys.param.setValue({name: TRADFRI_SECRET, value: 'validSecret'})
       return authenticate(client)
