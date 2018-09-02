@@ -3,6 +3,7 @@
   "version": "0.0.2",
   "description": "Control IKEA Tradfri devices through Gladys",
   "main": "index.js",
+  "repository": "https://github.com/Boimb/gladys-tradfri",
   "scripts": {
     "test": "nyc --reporter=clover --reporter=text ./node_modules/mocha/bin/mocha"
   },
@@ -25,7 +26,7 @@
       "clover",
       "text-summary"
     ],
-    "all": true,
+    "all": false,
     "report-dir": "./"
   }
 }
