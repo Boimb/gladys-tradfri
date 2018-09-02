@@ -4,7 +4,7 @@
   "description": "Control IKEA Tradfri devices through Gladys",
   "main": "index.js",
   "scripts": {
-    "test": "nyc ./node_modules/mocha/bin/mocha"
+    "test": "nyc --reporter=clover --reporter=text ./node_modules/mocha/bin/mocha"
   },
   "author": "Boimb",
   "license": "MIT",
