@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "https://github.com/Boimb/gladys-tradfri",
   "scripts": {
-    "test": "nyc --reporter=clover --reporter=text ./node_modules/mocha/bin/mocha"
+    "test": "nyc --reporter=lcov --reporter=text ./node_modules/mocha/bin/mocha"
   },
   "author": "Boimb",
   "license": "MIT",
