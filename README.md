@@ -1,5 +1,7 @@
 # [WIP]gladys-tradfri
 
+[![Build Status](https://travis-ci.org/Boimb/gladys-tradfri.svg?branch=master)](https://travis-ci.org/Boimb/gladys-tradfri)
+
 ## Description
 Control IKEA Tradfri devices through Gladys.
 
