@@ -1,8 +1,10 @@
 # [WIP]gladys-tradfri
 
 ## Description
-Control IKEA Tradfri devices through Gladys
+Control IKEA Tradfri devices through Gladys.
 
+*This module interacts with the TRADFRI Gateway.
+You need to have your devices associated with it before install.*
  
 ## Installation
 
