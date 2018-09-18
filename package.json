@@ -5,7 +5,8 @@
   "main": "index.js",
   "repository": "https://github.com/Boimb/gladys-tradfri",
   "scripts": {
-    "test": "nyc --reporter=clover --reporter=text ./node_modules/mocha/bin/mocha"
+    "test": "nyc --reporter=text ./node_modules/mocha/bin/mocha",
+    "cover": "nyc --reporter=lcov ./node_modules/mocha/bin/mocha"
   },
   "author": "Boimb",
   "license": "MIT",
@@ -13,11 +14,14 @@
     "node-tradfri-client": "1.2.1"
   },
   "devDependencies": {
-    "mocha": "^5.2.0",
-    "sinon": "^6.1.5",
     "bluebird": "^3.5.1",
+    "chai": "^4.1.2",
+    "chai-like": "^1.1.1",
+    "chai-things": "^0.2.0",
+    "gladys-node-api-mock": "git+https://github.com/Boimb/gladys-node-api-mock.git",
+    "mocha": "^5.2.0",
     "nyc": "^13.0.1",
-    "gladys-node-api-mock": "git+https://github.com/Boimb/gladys-node-api-mock.git"
+    "sinon": "^6.1.5"
   },
   "nyc": {
     "check-coverage": true,
