@@ -1,5 +1,9 @@
 const assert = require('assert')
 const sinon = require ('sinon')
+const chai = require('chai')
+const chaiAsPromised = require("chai-as-promised")
+chai.use(chaiAsPromised)
+const should = chai.should()
 const gladysMock = require('gladys-node-api-mock')
 const sailsGlobal = require('./mocks/sails')
 const {TradfriClientMock} = require('./mocks/tradfriClient')
@@ -101,9 +105,7 @@ describe('UPDATE STATE', () => {
 
   Object.keys(deviceTypesOn).map(key => {
     let deviceType = deviceTypesOn[key]
-
     return describe(`${key} case`, () => {
-
       beforeEach(() => {
         spy = sinon.spy(gladys.deviceState, 'create')
 
@@ -113,48 +115,39 @@ describe('UPDATE STATE', () => {
         gladys.deviceState.create.restore()
       })
 
-      it(`Change ${key} from ${deviceType.lastValue} to ${deviceType.testValue}`, () => {
-        return updateState(TradfriClientMock.LIGHT_ON, deviceType)
-        .then(deviceState => {
-          assert(spy.calledOnce, 'gladys.devcieState.create should be called once')
-          assert('has changed', deviceState.value === deviceType.testValue)
-        })
+      it(`Change ${key} from ${deviceType.lastValue} to ${deviceType.testValue}`, async () => {
+        await updateState(TradfriClientMock.LIGHT_ON, deviceType)
+        assert(spy.calledOnce, 'gladys.deviceState.create should be called once')
+        assert.equal(spy.args[0][0].value, deviceType.testValue, 'gladys.deviceState.create should be called with testValue')
+        assert.equal(spy.args[0][0].devicetype, deviceType.id, 'gladys.deviceState.create should be called with deviceType')
+
       })
-      it(`Doesn't update if equals`, () => {
-        return updateState(TradfriClientMock.LIGHT_ON, {...deviceType, lastValue: deviceType.testValue})
-        .then(deviceState => {
-          assert(spy.notCalled, 'should not call deviceState.create')
-          assert(deviceState === undefined)
-        })
+      it(`Doesn't update if equals`, async () => {
+        const result = await updateState(TradfriClientMock.LIGHT_ON, {...deviceType, lastValue: deviceType.testValue})
+        assert(spy.notCalled, 'should not call deviceState.create')
+        assert(result === undefined, 'updateState returns undefined')
       })
     })
   })
   Object.keys(deviceTypesOn).map(key => {
     let deviceType = deviceTypesOn[key]
-
     return describe(`Wrong updated device values case`, () => {
 
       beforeEach(() => {
         spy = sinon.spy(gladys.deviceState, 'create')
 
       })
-
       afterEach(() => {
         gladys.deviceState.create.restore()
       })
 
       it(`Change should throw`, () => {
-        return updateState(TradfriClientMock.WRONG_DEVICE, deviceType)
-        .catch(err => {
-          assert(true, 'catched')
-          assert(err.message === 'Could not convert value to number.', 'gladys.devcieState.create should throw')
-        })
+        return updateState(TradfriClientMock.WRONG_DEVICE, deviceType).should.be.rejectedWith('Could not convert value to number.')
       })
     })
   })
   Object.keys(deviceTypesOff).map(key => {
     let deviceType = deviceTypesOff[key]
-
     return describe(`${key} case`, () => {
 
       beforeEach(() => {
@@ -166,34 +159,29 @@ describe('UPDATE STATE', () => {
         gladys.deviceState.create.restore()
       })
 
-      it(`Change ${key} from ${deviceType.lastValue} to ${deviceType.testValue}`, () => {
-        return updateState(TradfriClientMock.LIGHT_OFF, deviceType)
-        .then(deviceState => {
-          assert(spy.calledOnce, 'gladys.devcieState.create should be called once')
-          assert('has changed', deviceState.value === deviceType.testValue)
-        })
+      it(`Change ${key} from ${deviceType.lastValue} to ${deviceType.testValue}`, async () => {
+        await updateState(TradfriClientMock.LIGHT_OFF, deviceType)
+        assert(spy.calledOnce, 'gladys.deviceState.create should be called once')
+        assert.equal(spy.args[0][0].value, deviceType.testValue, 'gladys.deviceState.create should be called with testValue')
+        assert.equal(spy.args[0][0].devicetype, deviceType.id, 'gladys.deviceState.create should be called with deviceType')
+
       })
-      it(`Doesn't update if equals`, () => {
-        return updateState(TradfriClientMock.LIGHT_OFF, {...deviceType, lastValue: deviceType.testValue})
-        .then(deviceState => {
-          assert(spy.notCalled, 'should not call deviceState.create')
-          assert(deviceState === undefined)
-        })
+      it(`Doesn't update if equals`, async () => {
+        const result = await updateState(TradfriClientMock.LIGHT_OFF, {...deviceType, lastValue: deviceType.testValue})
+        assert(spy.notCalled, 'should not call deviceState.create')
+        assert(result === undefined, 'updateState returns undefined')
       })
     })
   })
 
   describe('Unhandled deviceType', () => {
-    it('should do nothing', () => {
+    it('should do nothing', async () => {
       const deviceType = {name: 'unkonwn', identifier: 'unknown:1'}
-      return updateState(TradfriClientMock.LIGHT_ON, {...deviceType, lastValue: deviceType.testValue})
-      .then(deviceState => {
-        assert(spy.notCalled, 'should not call deviceState.create')
-        assert(deviceState === undefined)
-      })
+      const result = await updateState(TradfriClientMock.LIGHT_ON, {...deviceType, lastValue: deviceType.testValue})
+      assert(spy.notCalled, 'should not call deviceState.create')
+      assert(result === undefined)
     })
   })
-
 
   describe('No deviceType set', () => {
     it('Should catch', () => {
@@ -202,13 +190,9 @@ describe('UPDATE STATE', () => {
         type: 'binary',
         identifier: 'onOff:65539',
         lastValue: 0,
-        id: 1,
         testValue: 1
       }
-      return updateState(TradfriClientMock.LIGHT_ON, wrongDeviceType)
-        .catch(err => {
-          assert('error catched', true)
-        })
+      return updateState(TradfriClientMock.LIGHT_ON, wrongDeviceType).should.be.rejectedWith(Error)
     })
   })
 

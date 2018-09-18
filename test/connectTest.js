@@ -1,5 +1,10 @@
-const assert = require('assert');
+const assert = require('assert')
 const sinon = require ('sinon')
+const chai = require('chai')
+const chaiAsPromised = require("chai-as-promised")
+chai.use(chaiAsPromised)
+const should = chai.should()
+
 const {TradfriClient} = require ('node-tradfri-client')
 const gladysMock = require('gladys-node-api-mock')
 const sailsGlobal = require('./mocks/sails')
@@ -15,33 +20,39 @@ describe('CONNECT TESTS', () => {
 
   describe('Finding gateway', () => {
     it('Should reject if no gateway found', () => {
-      return connect(null)
-        .then(() => {
-          assert(true === false, 'Should not have resolved')
-        })
-        .catch(err => {
-          assert(err.message === 'Could not find any TRADFRI gateway', 'Attended rejection')
-        })
+      return connect(null).should.be.rejectedWith(Error)
     })
   })
 
   describe('Using validSecret', () => {
-    it('Should connect if validSecret', () => {
-      // Set a valid secret
+    let clientMock, authenticateFunc, connectFunc
+    beforeEach (() => {
+      // mock tradfriClient
+      clientMock = new TradfriClientMock()
+      authenticateFunc = sinon.stub(TradfriClient.prototype, 'authenticate').callsFake(clientMock.authenticate)
+      connectFunc = sinon.stub(TradfriClient.prototype, 'connect').callsFake(clientMock.connect)
       gladys.param.setValue({name: TRADFRI_SECRET, value: 'validSecret'})
 
-      // mock tradfriClient
-      const clientMock = new TradfriClientMock()
-      sinon.stub(TradfriClient.prototype, 'authenticate').callsFake(clientMock.authenticate)
-      sinon.stub(TradfriClient.prototype, 'connect').callsFake(clientMock.connect)
+    })
+    afterEach(() => {
+      authenticateFunc.restore()
+      connectFunc.restore()
+      gladys.param.clearCache()
+    })
 
-      return connect(discoveredGatewayMock)
-        .then(client => {
-          assert(client instanceof TradfriClient, 'Got client')
-        })
-        .catch(err => {
-          assert(true === false, 'Should not have been rejected')
-        })
+    it('Should connect if validSecret', () => {
+      // Set a valid secret
+      return connect(discoveredGatewayMock).should.be.fulfilled
+    })
+
+    it('should authenticate if no credentials', async () => {
+      const setParamSpy = sinon.spy(gladys.param, 'setValue')
+      await connect(discoveredGatewayMock)
+      setParamSpy.restore()
+      // assert(authenticate.called, 'should not call deviceState.create')
+      assert(authenticateFunc.calledOnce, 'should Authenticate')
+      assert(setParamSpy.getCall(0).args[0].name == IDENTITY, 'should store IDENTITY')
+      assert(setParamSpy.getCall(1).args[0].name == PSK, 'should store PSK')
     })
 
     it('Should connect if valid credentials', () => {

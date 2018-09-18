@@ -16,6 +16,7 @@
   "devDependencies": {
     "bluebird": "^3.5.1",
     "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
     "chai-like": "^1.1.1",
     "chai-things": "^0.2.0",
     "gladys-node-api-mock": "git+https://github.com/Boimb/gladys-node-api-mock.git",
